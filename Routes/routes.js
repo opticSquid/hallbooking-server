@@ -9,5 +9,4 @@ router.use("/logout", require("../API/logout"));
 // router.use("/getBooking", require("../API/getbooking"));
 // router.use("/getBookingByUser", require("../API/getbookingbyuser"));
 // router.use("/createBooking", require("../API/createbooking"));
-
 module.exports = router;

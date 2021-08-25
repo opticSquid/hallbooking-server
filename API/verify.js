@@ -6,6 +6,7 @@ const verifieduserDB = require("../Database/verified-user");
 const activeUserDB = require("../Database/active-user");
 const validateJWT = (req, res, next) => {
   const emailJWT = req.params.emailtoken;
+  console.log("email token: ", emailJWT);
   try {
     let user2Bverified = jwt.Verify(emailJWT, process.env.EMAIL_SECRET);
     console.log("Verified user through jwt: ", user2Bverified);

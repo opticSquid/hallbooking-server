@@ -36,6 +36,7 @@ const createJWT = (req, res, next) => {
   //sign token
   let emailJWT = jwt.Sign(payload, process.env.EMAIL_SECRET, 900);
   res.locals.emailJWT = emailJWT;
+  console.log("JWT: ", emailJWT);
   next();
 };
 // Adding unverified users to DB
@@ -62,6 +63,7 @@ const addUser = async (req, res, next) => {
 // Sending Email
 const sendVerificationMail = async (req, res, next) => {
   let mailRoute = res.locals.emailJWT;
+  console.log("Mail route: ", mailRoute);
   let transporter = nodemailer.createTransport({
     service: "gmail",
     host: "smtp.gmail.com",
