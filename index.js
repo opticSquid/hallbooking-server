@@ -13,10 +13,12 @@ app.engine(
     defaultLayout: "main",
   })
 );
+
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+
 const port = process.env.PORT || 5000;
 
 app.use("/", require("./Routes/routes"));
@@ -25,6 +27,7 @@ app.listen(port, async () => {
   console.log(`Server is running on port ${port}`);
   try {
     await mongoose.connect(process.env.DBURI, {
+      useCreateIndex: true,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
