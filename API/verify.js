@@ -88,10 +88,9 @@ const add2ActiveUser = async (req, res, next) => {
 };
 const responsd2User = (req, res) => {
   res.status(200).json({
-    response: "Email verified successfully",
+    response: "Email verified successfully. Please login to continue",
     Name: res.locals.user.name,
     Role: res.locals.user.role,
-    Token: res.locals.auth,
   });
 };
 router.get(
@@ -100,7 +99,6 @@ router.get(
   findtheunverifiedAccount,
   addVerified2DB,
   deleteUnverifiedAccountfromCollection,
-  add2ActiveUser,
   responsd2User
 );
 module.exports = router;
