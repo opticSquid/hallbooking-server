@@ -15,6 +15,9 @@ const HallData = (req, res, next) => {
       message: "Missing Information",
     });
   } else {
+    if (body.capacity === undefined) {
+      body.capacity = "not mentioned";
+    }
     res.locals.hall = body;
     next();
   }
@@ -29,12 +32,10 @@ const add2DB = async (req, res) => {
   try {
     let responsefromDB = await hallDB.CreateHall(data);
     console.log("Response form DB in halls: ", responsefromDB);
-    res
-      .status(200)
-      .json({
-        status: "Hall created successfully",
-        error: responsefromDB.error,
-      });
+    res.status(200).json({
+      status: "Hall created successfully",
+      error: responsefromDB.error,
+    });
   } catch (err) {
     console.log("Error in createHalls: ", err);
     res.status(500).json({ status: "Internal Server Error", error: err });

@@ -14,7 +14,7 @@ const newSignUp = (req, res, next) => {
     body.role !== "user"
   ) {
     res.status(400).json({
-      message: "Missing required fields",
+      status: "Missing required fields",
     });
   } else {
     if (body.name === undefined) {
@@ -49,7 +49,7 @@ const addUser = async (req, res, next) => {
     ///detect error and respond
     if (ResultfromDB.error !== null) {
       res.status(400).json({
-        message: "User already exists",
+        status: "User already exists",
       });
     } else {
       console.log("Result from DB: ", ResultfromDB);
@@ -112,7 +112,7 @@ const starttimer = async (email) => {
 const response2Client = (req, res) => {
   starttimer(res.locals.user.email);
   res.status(200).json({
-    response: "Click on the verification mail sent to your inbox",
+    status: "Click on the verification mail sent to your inbox",
   });
 };
 router.post(
