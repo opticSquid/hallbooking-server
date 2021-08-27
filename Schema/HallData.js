@@ -16,7 +16,37 @@ let Hall = new schema({
     required: true,
   },
   Capacity: String,
-  Bookings: [bookingSchema],
-  WaitLists: [bookingSchema],
+  Bookings: [
+    {
+      start_date: {
+        type: Date,
+        required: true,
+      },
+      end_date: {
+        type: Date,
+        required: true,
+      },
+      Email: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  WaitLists: [
+    {
+      start_date: {
+        type: Date,
+        required: true,
+      },
+      end_date: {
+        type: Date,
+        required: true,
+      },
+      Email: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 module.exports = mongoose.model("Hall", Hall);
