@@ -28,4 +28,38 @@ const findUser = async (email) => {
   }
 };
 
-module.exports = { AddnewUser: addUser, FindUser: findUser };
+const addHalls = async (email, bookingData) => {
+  try {
+    let newBooking = await user.updateOne(
+      { Email: email },
+      { $addToSet: { Booking: bookingData } },
+      { upsert: false, new: true }
+    );
+    console.log("Booking added to DB, details: ", newBooking);
+    return { status: "Booking added", error: null };
+  } catch (e) {
+    console.error("Booking not added to DB, error occoured:\n", e);
+    return { status: "Booking could not be added to DB", error: e };
+  }
+};
+const deleteHalls = async (email, bookingData) => {
+  try {
+    console.log("Calling parameters in user DB: ", email, bookingData);
+    let newBooking = await user.updateOne(
+      { Email: email },
+      { $pull: { Booking: bookingData } },
+      { upsert: false, new: true }
+    );
+    console.log("Booking deleted from DB, details: ", newBooking);
+    return { status: "Booking deleted", error: null };
+  } catch (e) {
+    console.error("Booking not deleted from DB, error occoured:\n", e);
+    return { status: "Booking could not be deleted from DB", error: e };
+  }
+};
+module.exports = {
+  AddnewUser: addUser,
+  FindUser: findUser,
+  AddHalls: addHalls,
+  deleteBooking: deleteHalls,
+};

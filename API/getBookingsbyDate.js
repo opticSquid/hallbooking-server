@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const hallDb = require("../Database/halls");
-const { all } = require("./login");
 const incomingData = (req, res, next) => {
   const body = req.body;
   console.log("Search Data:", body);
@@ -8,7 +7,7 @@ const incomingData = (req, res, next) => {
    * start_date
    * end_date
    */
-  if (body.start_date === undefined || body.end_date === undefined) {
+  if (body.start_date === null || body.end_date === null) {
     res
       .status(400)
       .json({ m: 0, msg: "Please provide start_date and end_date" });
@@ -29,16 +28,16 @@ const getEachHall = async (req, res, next) => {
         console.log("Booking Start date: ", start_date);
         console.log("Booking End date: ", end_date);
         if (
-          (start_date <= res.locals.req_start_date &&
-            end_date <= res.locals.req_end_date) ||
-          (start_date >= res.locals.req_start_date &&
-            end_date >= res.locals.req_end_date)
+          (res.locals.req_start_date < start_date &&
+            res.locals.req_end_date < start_date) ||
+          (res.locals.req_start_date > end_date &&
+            res.locals.req_end_date > end_date)
         ) {
+          console.log("Booking is in the range", hall);
           available_to_book.push(hall);
         }
       }
     }
-    console.log("Bookings:", available_to_book);
     res.locals.available_to_book = available_to_book;
     next();
   } catch (err) {
@@ -47,6 +46,7 @@ const getEachHall = async (req, res, next) => {
   }
 };
 const getBookings = async (req, res, next) => {
+  console.log("Available to book: ", res.locals.available_to_book);
   res.status(200).json({
     status: "Success",
     data: res.locals.available_to_book,

@@ -26,4 +26,35 @@ const getHalls = async () => {
     return { status: "User not found", hall: null, error: e };
   }
 };
-module.exports = { CreateHall: createHalls, FindHalls: getHalls };
+const createHallBooking = async (uid, booking) => {
+  try {
+    let response = await halls.updateOne(
+      { UID: uid },
+      { $addToSet: { Bookings: booking } },
+      { upsert: false, new: true }
+    );
+    console.log("Returning the new hall booking: ", response);
+    return { status: "Booking created successfully", error: null };
+  } catch (err) {
+    return { status: "Booking could not be created", error: err };
+  }
+};
+const deleteBooking = async (uid, booking) => {
+  try {
+    let response = await halls.updateOne(
+      { UID: uid },
+      { $pull: { Bookings: booking } },
+      { upsert: false, new: true }
+    );
+    console.log("Returning the new hall booking: ", response);
+    return { status: "Booking deleted successfully", error: null };
+  } catch (err) {
+    return { status: "Booking could not be deleted", error: err };
+  }
+};
+module.exports = {
+  CreateHall: createHalls,
+  FindHalls: getHalls,
+  CreateBooking: createHallBooking,
+  DeleteBooking: deleteBooking,
+};

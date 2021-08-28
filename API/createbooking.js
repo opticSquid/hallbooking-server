@@ -1,6 +1,8 @@
 const router = require("express").Router();
 const jwt = require("../Middlewares/jwt");
 const hallDb = require("../Database/halls");
+const userDb = require("../Database/verified-user");
+const HallData = require("../Schema/HallData");
 const getUser = (req, res, next) => {
   const auth = req.headers.token;
   const user = jwt.Verify(auth, process.env.AUTH_SECRET);
@@ -11,37 +13,35 @@ const getUser = (req, res, next) => {
 
 const booking = (req, res, next) => {
   const body = req.body;
+  if (
+    body.UID === undefined ||
+    body.Name === undefined ||
+    body.Place === undefined ||
+    body.start_date === null ||
+    body.end_date === null
+  ) {
+    res.status(400).json({ status: "Required Fields Missing" });
+  }
   console.log("request that came in create booking: ", body);
-  next();
-  //changing string to date
-  // let start_date = body.start_date;
-  // let end_date = body.end_date;
-  // let s_date = new Date(start_date);
-  // console.log("s_date: ", s_date);
-
-  //creating new Hall Data
   next();
 };
 const booking_data = async (req, res, next) => {
   try {
-    let bookingList = req.body.Bookings;
-    console.log("booking: ", bookingList);
-    let booking = req.body.Bookings.push({
+    let booking = {
       start_date: req.body.start_date,
       end_date: req.body.end_date,
       Email: res.locals.user.Email,
-    });
-    console.log("booking: ", booking);
-    let hall_data = {
-      UID: req.body.UID,
-      Name: req.body.Name,
-      Place: req.body.Place,
-      Capacity: req.body.Capacity,
-      Bookings: bookingList,
-      WaitLists: req.body.WaitLists,
     };
-    console.log("hall_data: ", hall_data);
-    let responsefromDB = await hallDb.CreateHall(hall_data);
+    console.log("booking: ", booking);
+    // let hall_data = {
+    //   UID: req.body.UID,
+    //   Name: req.body.Name,
+    //   Place: req.body.Place,
+    //   Capacity: req.body.Capacity,
+    //   Bookings: bookingList,
+    //   WaitLists: req.body.WaitLists,
+    // };
+    let responsefromDB = await hallDb.CreateBooking(req.body.UID, booking);
     console.log("response from DB: ", responsefromDB);
     next();
   } catch (error) {
@@ -51,7 +51,38 @@ const booking_data = async (req, res, next) => {
     }
   }
 };
-router.post("/", getUser, booking, booking_data, (req, res) => {
-  res.status(200).json({ status: "Booking Successful", error: null });
-});
+const addBookingtoUser = async (req, res, next) => {
+  try {
+    let hall_data = {
+      UID: req.body.UID,
+      Name: req.body.Name,
+      Place: req.body.Place,
+      Capacity: req.body.Capacity,
+      start_date: req.body.start_date,
+      end_date: req.body.end_date,
+    };
+    console.log("hall_data in add to user DB: ", hall_data);
+    let responsefromDB = await userDb.AddHalls(
+      res.locals.user.Email,
+      hall_data
+    );
+    console.log("Response while adding hall to user: ", responsefromDB);
+    next();
+  } catch (error) {
+    if (error) {
+      console.log("error: ", error);
+      res.status(500).json({ status: "Booking Failed", error: error });
+    }
+  }
+};
+router.post(
+  "/",
+  getUser,
+  booking,
+  booking_data,
+  addBookingtoUser,
+  (req, res) => {
+    res.status(200).json({ status: "Booking Successful" });
+  }
+);
 module.exports = router;

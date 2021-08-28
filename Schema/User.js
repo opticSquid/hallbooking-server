@@ -15,5 +15,24 @@ let User = new schema({
     type: String,
     required: true,
   },
+  Booking: [
+    {
+      UID: {
+        type: String,
+        required: true,
+      },
+      Name: {
+        type: String,
+        required: true,
+      },
+      Place: {
+        type: String,
+        required: true,
+      },
+      Capacity: String,
+      start_date: String,
+      end_date: String,
+    },
+  ],
 });
 module.exports = mongoose.model("User", User);

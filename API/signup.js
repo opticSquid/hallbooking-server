@@ -80,7 +80,7 @@ const sendVerificationMail = async (req, res, next) => {
     html: `
     <div>
       <b>
-        Hello ${res.locals.user.Name},
+        Hello ${res.locals.user.name},
       </ b>
       <p>
         This mail is sent to you from Coined1-Challenge to verify your mail address. This verification Link will be valid for <strong>15 minutes</strong>. 

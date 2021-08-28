@@ -56,36 +56,7 @@ const deleteUnverifiedAccountfromCollection = async (req, res, next) => {
     res.status(500).end();
   }
 };
-const authToken = (email, name, ip) => {
-  let token = jwt.Sign(
-    { Email: email, Name: name, IP: ip },
-    process.env.AUTH_SECRET
-  );
-  return token;
-};
-const add2ActiveUser = async (req, res, next) => {
-  let clientIP = req.ip;
-  console.log("Client IP address", clientIP);
-  res.locals.auth = authToken(
-    res.locals.user.email,
-    res.locals.user.name,
-    clientIP
-  );
-  try {
-    await activeUserDB.StartSession({
-      IP: clientIP,
-      auth_token: res.locals.auth,
-    });
-    console.log("Session started");
-    next();
-  } catch (e) {
-    console.error("Session could not start", e);
-    res.status(200).json({
-      response:
-        "Your email address has been verified. Please login to continue",
-    });
-  }
-};
+
 const responsd2User = (req, res) => {
   res.status(200).json({
     response: "Email verified successfully. Please login to continue",
